@@ -6,8 +6,8 @@ import {Button, Paper, Box, TextField, Dialog, DialogTitle, DialogContent, Dialo
 
 const Table = () => {
     const backendAPI = "http://localhost:8082/products";
-    const [products, setProducts] = useState([]);
 
+    const [products, setProducts] = useState([]);
     const [searchName, setSearchName] = useState("");
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
@@ -80,7 +80,7 @@ const Table = () => {
         try {
             await axios.put(backendAPI + `/${editData.id}`, editData);
             setOpenEdit(false);
-            getProducts();
+            await getProducts();
         } catch (err) {
             console.error("Update failed:", err);
             alert("Failed to update product");
@@ -90,25 +90,10 @@ const Table = () => {
     //Search products
     const searchProduct = async () => {
         try {
-            let response;
-            if (searchName && !minPrice && !maxPrice) {
-                response = await axios.get(backendAPI + `/name/${searchName}`);
-            } else if (!searchName && (minPrice || maxPrice)) {
-                const min = minPrice || 0;
-                const max = maxPrice || 9999999;
-                response = await axios.get(backendAPI + `/price`, {
-                    params: {min, max},
-                });
-            } else if (searchName && (minPrice || maxPrice)) {
-                const nameResponse = await axios.get(backendAPI + `/name/${searchName}`);
-                const min = minPrice || 0;
-                const max = maxPrice || 9999999;
-                response = {
-                    data: nameResponse.data.filter((p) => p.price >= min && p.price <= max),
-                };
-            } else {
-                response = await axios.get(backendAPI);
-            }
+            const name = searchName;
+            const response = await axios.get(backendAPI + `/search`, {
+                params: {name, minPrice, maxPrice},
+            });
             setProducts(response.data);
         } catch (error) {
             console.error("Search failed:", error);

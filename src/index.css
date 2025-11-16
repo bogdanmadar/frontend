@@ -16,13 +16,3 @@ h2 {
   margin-bottom: 30px;
   font-size: 30px;
 }
-
-.card-container {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  max-width: 1024px;
-  margin: 0 auto;
-}
